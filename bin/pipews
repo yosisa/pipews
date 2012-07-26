@@ -6,6 +6,7 @@ var main = require('../lib/main').main;
 program.
     version('0.0.1').
     option('-p, --port <port>', 'specify the port [24230]', Number, 24230).
+    option('--disable-input', 'disable stdin').
     parse(process.argv);
 
-main(program.port);
+main(program.port, {disableInput: program.disableInput});

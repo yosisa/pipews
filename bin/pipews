@@ -5,7 +5,7 @@ var main = require('../lib/main').main;
 
 program.
     version('0.0.1').
-    option('-p, --port <port>', 'specify the port [24230]', Number, 24230).
+    option('-p, --port <port>', 'specify the port [80]', Number, 80).
     option('--disable-input', 'disable stdin').
     option('--disable-output', 'disable stdout').
     parse(process.argv);

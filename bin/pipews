@@ -1,4 +1,11 @@
 #!/usr/bin/env node
 
+var program = require('commander');
 var main = require('../lib/main').main;
-main(24230);
+
+program.
+    version('0.0.1').
+    option('-p, --port <port>', 'specify the port [24230]', Number, 24230).
+    parse(process.argv);
+
+main(program.port);

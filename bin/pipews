@@ -7,6 +7,8 @@ program.
     version('0.0.1').
     option('-p, --port <port>', 'specify the port [24230]', Number, 24230).
     option('--disable-input', 'disable stdin').
+    option('--disable-output', 'disable stdout').
     parse(process.argv);
 
-main(program.port, {disableInput: program.disableInput});
+main(program.port, {disableInput: program.disableInput,
+                    disableOutput: program.disableOutput});

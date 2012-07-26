@@ -66,6 +66,12 @@ describe('WebSocketHandler', function() {
             handler.onMessage({type: 'binary', binaryData: 'data'});
             sinon.assert.calledWithExactly(handler.stdout.write, 'data');
         });
+
+        it('should not write anything when stdout is null', function() {
+            handler.stdout = null;
+            handler.onMessage({type: 'utf8', utf8Data: 'data'});
+            handler.onMessage({type: 'binary', binaryData: 'data'});
+        });
     });
 
     describe('.broadcast', function() {

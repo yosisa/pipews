@@ -17,25 +17,29 @@ describe('WebSocketHandler', function() {
     });
 
     describe('.onRequest', function() {
-        var spy, request;
+        var request;
 
         beforeEach(function() {
-            spy = sinon.spy();
             request = {origin: 'www.example.com'};
             handler = new WebSocketHandler();
         });
 
         it('should accept when origin is allowed', function() {
-            request.accept = spy;
+            var connection = {on: sinon.spy()};
+            var accept = sinon.stub();
+            request.accept = accept.returns(connection);
             handler.originIsAllowed = sinon.stub().returns(true);
             handler.onRequest(request);
 
-            expect(spy.called).to.be.ok();
+            expect(accept.called).to.be.ok();
             sinon.assert.calledWithExactly(handler.originIsAllowed, request.origin);
-            sinon.assert.calledWithExactly(spy, null, request.origin);
+            sinon.assert.calledWithExactly(accept, null, request.origin);
+
+            sinon.assert.calledWithExactly(connection.on, 'message', handler.onMessage);
         });
 
         it('should reject when origin is not allowd', function() {
+            var spy = sinon.spy();
             request.reject = spy;
             handler.originIsAllowed = sinon.stub().returns(false);
             handler.onRequest(request);
@@ -43,6 +47,23 @@ describe('WebSocketHandler', function() {
             expect(spy.called).to.be.ok();
             sinon.assert.calledWithExactly(handler.originIsAllowed, request.origin);
             sinon.assert.calledWithExactly(spy);
+        });
+    });
+
+    describe('.onMessage', function() {
+        beforeEach(function() {
+            handler = new WebSocketHandler();
+            handler.stdout = {write: sinon.spy()};
+        });
+
+        it('should write received strings to stdout', function() {
+            handler.onMessage({type: 'utf8', utf8Data: 'data'});
+            sinon.assert.calledWithExactly(handler.stdout.write, 'data\n');
+        });
+
+        it('should write received binary data to stdout', function() {
+            handler.onMessage({type: 'binary', binaryData: 'data'});
+            sinon.assert.calledWithExactly(handler.stdout.write, 'data');
         });
     });
 

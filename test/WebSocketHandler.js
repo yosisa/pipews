@@ -35,7 +35,8 @@ describe('WebSocketHandler', function() {
             sinon.assert.calledWithExactly(handler.originIsAllowed, request.origin);
             sinon.assert.calledWithExactly(accept, null, request.origin);
 
-            sinon.assert.calledWithExactly(connection.on, 'message', handler.onMessage);
+            expect(connection.on.args[0][0]).to.be('message');
+            expect(connection.on.args[0][1]).to.be.a(Function);
         });
 
         it('should reject when origin is not allowd', function() {
